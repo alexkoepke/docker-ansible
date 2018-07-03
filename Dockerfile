@@ -5,7 +5,7 @@ LABEL maintainer="Alex Koepke <akoepke@usdigitalpartners.net"
 ENV TERM=xterm-256color
 
 # Set mirrors to closest
-RUN sed -i "s/http:\/\/us./http:\/\/mirrors.archive./g" /etc/apt/sources.list
+RUN sed -i "s/http:\/\/archive./http:\/\/mirrors.archive./g" /etc/apt/sources.list
 
 # Install Ansible
 RUN apt-get update -qy && \
@@ -14,10 +14,13 @@ RUN apt-get update -qy && \
     apt-get update -qy && \
     apt-get install -qy ansible
 
+# Copy baked in playbooks
+COPY ansible /ansible
+
 # Add volume for Ansible playbooks
-VOLUME [ "/ansible" ]
+VOLUME /ansible
 WORKDIR /ansible
 
 # Entrypoint
-ENTRYPOINT [ "ansible-playbook" ]
+ENTRYPOINT ["ansible-playbook"]
 CMD ["site.yml"]
